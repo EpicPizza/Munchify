@@ -124,49 +124,47 @@
                                 </div>
                             </div>
                         {:else}
-                            <div class="flex flex-col gap-6 w-[30rem] ml-auto mr-auto">
-                                <div bind:this={playerElementOne} class="bg-zinc-700 relative overflow-hidden w-full h-[45rem] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
+                            <div class="flex flex-col gap-6 w-full max-w-[30rem] md:max-w-[40rem] ml-auto mr-auto">
+                                <div bind:this={playerElementOne} class="bg-zinc-700 relative overflow-hidden w-full aspect-[9/16] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
                                     <div style="width: {videoProgressionOne * 100}%;" class="h-2 bg-yellow-400 transition-all absolute bottom-0 left-0"></div>
                                 </div>
 
                                 <div class="flex items-center justify-between -mt-3">
                                     <div class="flex items-center gap-3">
-                                        <button onclick={() => { if(videoStateOne == false) { playerOne.play(); } else { playerOne.pause(); } }} class="cursor-pointer rounded-2xl bg-black flex w-20 h-20 items-center justify-around text-white">
+                                        <button onclick={() => { if(videoStateOne == false) { playerOne.play(); } else { playerOne.pause(); } }} 
+                                            class="cursor-pointer rounded-2xl bg-black/80 hover:bg-black transition-colors flex w-16 h-16 items-center justify-around text-white">
                                             {#if videoEndedOne == true}
-                                                <Icon width=3rem icon=mdi:refresh></Icon>
+                                                <Icon width=2.5rem icon=mdi:refresh></Icon>
                                             {:else if videoStateOne == false}
-                                                <Icon width=3rem icon=mdi:play></Icon>
+                                                <Icon width=2.5rem icon=mdi:play></Icon>
                                             {:else}
-                                                <Icon width=3rem icon=mdi:pause></Icon>
+                                                <Icon width=2.5rem icon=mdi:pause></Icon>
                                             {/if}       
                                         </button>
                                         <button onclick={() => {
                                             fetch('/heart?type=' + (heartedOne ? "remove" : "add") + '&id=' + videoOne.id, {
                                                 method: 'POST',
                                             });
-
                                             videoOne.hearts += heartedOne ? -1 : 1;
-
                                             heartedOne = !heartedOne;
-                                        }} class="rounded-2xl cursor-pointer flex w-20 h-20 items-center justify-around {heartedOne ? "bg-white text-black" : "bg-black text-white"}">
-                                            <div class="flex flex-col items-center gap-0.5 mt-1">
-                                                <Icon width=2rem icon=mdi:thumbs-up></Icon>
+                                        }} class="rounded-2xl cursor-pointer flex w-16 h-16 items-center justify-around transition-colors {heartedOne ? "bg-white hover:bg-gray-100 text-black" : "bg-black/80 hover:bg-black text-white"}">
+                                            <div class="flex flex-col items-center gap-0.5">
+                                                <Icon width=1.75rem icon=mdi:thumbs-up></Icon>
                                                 <p class="text-xs">{videoOne.hearts}</p>
                                             </div>
                                         </button>
-                                        
                                     </div>
 
                                     <div class="flex items-center gap-3">
-                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
-                                            <Icon width=2rem icon=mdi:volume></Icon>
-                                        </div>
-                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
-                                            <Icon width=2rem icon=mdi:share></Icon>
-                                        </div>
-                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
-                                            <Icon width=2rem icon=mdi:comments></Icon>
-                                        </div>
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:volume></Icon>
+                                        </button>
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:share></Icon>
+                                        </button>
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:comments></Icon>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -254,10 +252,27 @@
 
 <style>
     .pattern {
-        background-color: #e5e5f7;
-        opacity: 0.8;
-        background-image:  linear-gradient(#a5a9e8 2px, transparent 2px), linear-gradient(90deg, #a5a9e8 2px, transparent 2px), linear-gradient(#a5a9e8 1px, transparent 1px), linear-gradient(90deg, #bfc2f1 1px, #e5e5f7 1px);
-        background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
-        background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+        background-color: #f8f9fa;
+        opacity: 0.9;
+        background-image: 
+            radial-gradient(#e9ecef 0.5px, transparent 0.5px),
+            radial-gradient(#e9ecef 0.5px, #f8f9fa 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        position: relative;
+    }
+
+    .pattern::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            45deg,
+            rgba(255,255,255,0.2) 0%,
+            rgba(255,255,255,0.1) 100%
+        );
     }
 </style>
