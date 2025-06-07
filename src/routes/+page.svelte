@@ -142,6 +142,8 @@
                                             {/if}       
                                         </button>
                                         <button onclick={() => {
+                                            if(videoOne == false) return;
+
                                             fetch('/heart?type=' + (heartedOne ? "remove" : "add") + '&id=' + videoOne.id, {
                                                 method: 'POST',
                                             });
@@ -197,6 +199,8 @@
                                             {/if}       
                                         </button>
                                         <button onclick={() => {
+                                             if(videoTwo == false) return;
+
                                             fetch('/heart?type=' + (heartedTwo ? "remove" : "add") + '&id=' + videoTwo.id, {
                                                 method: 'POST',
                                             });
