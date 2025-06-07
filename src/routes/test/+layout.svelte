@@ -13,7 +13,7 @@
     <div class="w-[38rem] p-8">
         {@render children()}
 
-         <div class="p-4 rounded-lg bg-black/10 break-words">
+         <div class="p-4 rounded-lg mt-20 bg-black/10 break-words">
             <p class="mb-2 opacity-80">CLIENT</p>
             <p class="text-xs">{JSON.stringify(client.user)}</p>
         </div>

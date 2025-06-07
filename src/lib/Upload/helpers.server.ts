@@ -99,6 +99,8 @@ export async function getQueue(marker: NewQueue) {
   const data = (await ref.get()).data();
 
   if (data == undefined) {
+    console.log("new?");
+
     return await newQuene(marker);
   }
 
@@ -165,9 +167,9 @@ export async function addChunk(marker: NewQueue, chunk: Chunk) {
 
   const progress = queue.progress.includes(chunk.number) ? queue.progress : [...queue.progress, chunk.number];
 
-  if(progress.length == queue.chunks) {
-    await finish(queue);
+  console.log("PROGRESS", progress, chunk.number);
 
+  if(progress.length == queue.chunks) {
     return true;
   } 
 

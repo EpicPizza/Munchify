@@ -4,7 +4,11 @@
     import Icon from "@iconify/svelte";
     import { getContext } from "svelte";
 
-    const client = getContext('client') as Client;
+    let { children } = $props();
 </script>
 
-<h1 class="text-3xl font-bold">Upload File</h1>
+<div class="flex justify-around font-[Nunito]">
+    <div class="w-[38rem] p-8">
+        {@render children()}
+    </div>
+</div>

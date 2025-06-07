@@ -21,12 +21,14 @@ function getFirebaseAdmin() {
                     credential: admin.credential.cert(
                         JSON.parse(ADMIN) as admin.ServiceAccount,
                     ),
+                    storageBucket: "laneyhackthon.firebasestorage.app"
                 }, "Server");
             } else if(admin.apps.length == 0) {
                 app = admin.initializeApp({
                     credential: admin.credential.cert(
                         JSON.parse(ADMIN) as admin.ServiceAccount,
                     ),
+                    storageBucket: "laneyhackthon.firebasestorage.app"
                 }, "Server");
             } else {
                 var found = false;
