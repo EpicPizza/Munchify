@@ -231,11 +231,39 @@
                 </div>
 
                 <div class="flex flex-col gap-4 w-[6rem]">
-                    <button class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                    <button onclick={() => {
+                        let tempVideo = videoTwo;
+                        let tempHearted = heartedTwo;
+
+                        videoTwo = videoOne;
+                        heartedTwo = heartedOne;
+
+                        scroll.scrollTo({ top: windowHeight, behavior: "instant" });
+
+                        videoOne = tempVideo;
+                        heartedOne = tempHearted;
+
+                        scroll.scrollTo({ top: 0, behavior: "smooth" });
+                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
                         <Icon width=2.5rem icon=material-symbols:arrow-upward></Icon>
                     </button>
 
-                    <button onclick={() => { scroll.scrollTo({ top: windowHeight, behavior: "smooth" }); }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                    <button onclick={() => { 
+                        scroll.scrollTo({ top: windowHeight, behavior: "smooth" });
+
+                        scroll.addEventListener('scrollend', () => {
+                            let tempVideo = videoOne;
+                            let tempHearted = heartedOne;
+
+                            videoOne = videoTwo;
+                            heartedOne = heartedTwo;
+
+                            scroll.scrollTo({ top: 0, behavior: "instant" });
+
+                            videoTwo = tempVideo;
+                            heartedTwo = tempHearted;
+                        }, { once: true });
+                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
                         <Icon width=2.5rem icon=material-symbols:arrow-downward></Icon>
                     </button>   
                 </div>
