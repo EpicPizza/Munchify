@@ -2,10 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Vimeo } from 'vimeo';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import type { FileData } from '@ffmpeg/ffmpeg';
-import { toBlobURL } from '@ffmpeg/util';
 
 // Initialize Gemini
-const genAI = new GoogleGenerativeAI('AIzaSyB1g5w9MLL0-SDb8iSYnYNPblVNYApsKek');
+const genAI = new GoogleGenerativeAI('');
 
 // Initialize FFmpeg lazily
 let ffmpegInstance: FFmpeg | null = null;

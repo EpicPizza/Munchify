@@ -5,8 +5,11 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { error, json, redirect } from "@sveltejs/kit";
 import { getDownloadURL } from "firebase-admin/storage";
 import { collection } from "firebase/firestore";
-import { Readable, Writable } from "node:stream";
+import { Readable, Writable, PassThrough } from "node:stream";
 import { z } from "zod";
+import ffmpeg from 'fluent-ffmpeg';
+import importedScript from './script.json';
+import { AudioGenerationService } from "$lib/services/audioGeneration.server";
 
 const Interval = z.object({
     interval: z.string(),
@@ -39,7 +42,7 @@ export async function POST({ request, locals }) {
 
     const ai = new GoogleGenAI({ apiKey: GEMINI });
    
-    const config = { 
+   const config = { 
         responseMimeType: 'application/json',
         responseSchema: {
             type: Type.OBJECT,
@@ -192,22 +195,105 @@ I've crafted a concise and professional response, designed to indicate my comple
         output += chunk.text;
     }
 
-    const script = Script.parse(JSON.parse(output));
+    const script = Script.parse(JSON.parse(output));/*
+
+    //const script = importedScript;
 
     console.log(script);
     
     const id = crypto.randomUUID();
 
-    await generateVeo2Video(id, 0, script.intervals[0], ai);
+    const result = await Promise.all(script.intervals.slice(0, 2).map((interval, i) => {
+        return generateVeo2Video(id, i, interval, ai);
+    }));
+
+    console.log("RESULTS", result);*/
+
+    /*const id = "b6510703-c6f0-4170-8cc3-4d677f5966a8";
+
+    const result = [
+  'generated/b6510703-c6f0-4170-8cc3-4d677f5966a8/0',
+  'generated/b6510703-c6f0-4170-8cc3-4d677f5966a8/1'
+];
+
+    await concatenateVideos(result, id);
+
+    const script = importedScript;
+
+    const audio = new AudioGenerationService();
+
+    audio.generateAudioForIntervals(script.intervals.map((interval, i) => ({ script: interval.script_8s, order: i})), (progress) => {
+        console.log(progress);
+    })*/
 
     return json({
         output: script,
     });
 };
 
-interface VideoSegment {
-    description: string;
-    duration: number;
+
+/*async function concatenateVideos(videoFiles: string[], id: string) {
+  try {
+    const bucket = firebaseAdmin.getBucket();
+
+    console.log('Starting video concatenation...');
+
+    let command = ffmpeg();
+
+    // Create and add each video as a converted TS stream input
+    for (const fileName of videoFiles) {
+        (async () => {
+            // Assuming `fileName` is in scope from the loop `for (const fileName of videoFiles)`
+            // Assuming `bucket` is in scope from `firebaseAdmin.getBucket()`
+            // Assuming `videoFiles` is the array parameter of `concatenateVideos`
+            const index = videoFiles.indexOf(fileName); // Get index for unique filename
+            const localPath = `temp_video_segment_${index}.mp4`; // Define a local path for the temporary file
+            await bucket.file(fileName).download({ destination: localPath }); // Download the file from Firebase Storage
+            return localPath; // Return the local path
+        })()
+
+      command = command.addInput();
+    }
+
+    // Create a writable stream to Google Cloud Storage for the output
+    const outputFile = firebaseAdmin.getBucket().file(`generated/${id}/complete`);
+    const outputStream = outputFile.createWriteStream({
+      resumable: false, // Use a simple upload for this example
+      contentType: 'video/mp4',
+    });
+
+    command.complexFilter([
+        // Define the concat filter to merge video and audio streams
+        // n=number of input files, v=number of video streams, a=number of audio streams
+        `concat=n=${videoFiles.length}:v=1:a=1`
+    ]).outputOptions([
+        '-f', 'mp4', // Set output format (important for streaming)
+        '-movflags', 'frag_keyframe+empty_moov' // Optional: for fragmented MP4
+    ]).on('start', (commandLine) => {
+        console.log('FFmpeg command:', commandLine);
+      })
+      .on('error', (err, stdout, stderr) => {
+        console.error('Error during concatenation:', err.message);
+        console.error('ffmpeg stderr:', stderr);
+      })
+      .on('end', () => {
+        console.log('Concatenation finished successfully.');
+      })
+      .mergeToFile('example.mp4', './');
+
+        await new Promise((resolve, reject) => {
+                outputStream.on("finish", async () => {
+                await firebaseAdmin.getBucket().file(`generated/${id}/complete`).setMetadata({ contentType: 'video/mp4' });
+                resolve(0);
+            });
+            outputStream.on("error", reject);
+        });
+
+
+
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  }
 }
 
 async function generateVeo2Video(id: string, index: number, interval: Interval, ai: GoogleGenAI): Promise<string> {
@@ -226,7 +312,7 @@ Storyboard:
         config: {
             numberOfVideos: 1,
             aspectRatio: '9:16',
-            personGeneration: 'dont_allow',
+            personGeneration: 'allow_adult',
             durationSeconds: 8,
         },
     });
@@ -241,11 +327,19 @@ Storyboard:
         });
     }
 
+    console.log(operation);
+
     console.log(operation.response?.generatedVideos);
 
     let returning = "";
 
-    operation.response?.generatedVideos?.forEach(async (generatedVideo, i) => {
+    const videos = operation.response?.generatedVideos;
+
+    if(videos == undefined) throw error(500);
+    
+    for(let i = 0; i < videos.length; i++) {
+        const generatedVideo = videos[i];
+        
         console.log(`Video has been generated: ${generatedVideo?.video?.uri}`);
         const response = await fetch(`${generatedVideo?.video?.uri}&key=${GEMINI}`);
 
@@ -257,7 +351,7 @@ Storyboard:
 
         const stream = file.createWriteStream();
 
-        if(response.body == null) return;
+        if(response.body == null) throw error(500);
 
         try {
             Readable.fromWeb(response.body as any).pipe(stream);
@@ -279,7 +373,7 @@ Storyboard:
 
             throw { message: "Upload failed.", type: "display" };
         }
-    });
+    };
 
     return returning;
-}
+}*/

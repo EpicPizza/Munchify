@@ -39,13 +39,29 @@
         
         playerOne.setColor("#f5c002");
 
-        playerOne.on('play', () => videoStateOne = true);
-        playerOne.on('pause', () => videoStateOne = false);
-        playerOne.on('ended', () => videoEndedOne = true);
-        playerOne.on('playing', () => videoEndedOne = false);
-        playerOne.on('timeupdate', (event) => videoProgressionOne = event.percent);
+        playerOne.on('play', () => {
+            videoStateOne = true;
+        });
 
-        return () => playerOne.destroy();
+        playerOne.on('pause', () => {
+            videoStateOne = false;
+        });
+
+        playerOne.on('ended', () => {
+            videoEndedOne = true;
+        });
+
+        playerOne.on('playing', () => {
+            videoEndedOne = false;
+        });
+
+        playerOne.on('timeupdate', (event) => {
+            videoProgressionOne = event.percent;
+        });
+
+        return () => {
+            playerOne.destroy();
+        }
     });
 
     $effect(() => {
@@ -58,30 +74,46 @@
         
         playerTwo.setColor("#f5c002");
 
-        playerTwo.on('play', () => videoStateTwo = true);
-        playerTwo.on('pause', () => videoStateTwo = false);
-        playerTwo.on('ended', () => videoEndedTwo = true);
-        playerTwo.on('playing', () => videoEndedTwo = false);
-        playerTwo.on('timeupdate', (event) => videoProgressionTwo = event.percent);
+        playerTwo.on('play', () => {
+            videoStateTwo = true;
+        });
 
-        return () => playerTwo.destroy();
+        playerTwo.on('pause', () => {
+            videoStateTwo = false;
+        });
+
+        playerTwo.on('ended', () => {
+            videoEndedTwo = true;
+        });
+
+        playerTwo.on('playing', () => {
+            videoEndedTwo = false;
+        });
+
+        playerTwo.on('timeupdate', (event) => {
+            videoProgressionTwo = event.percent;
+        });
+
+        return () => {
+            playerTwo.destroy();
+        }
     });
 
     let scroll: HTMLDivElement;
+
     let windowHeight = 0;
 </script>
 
-<svelte:window bind:innerHeight={windowHeight} />
+<svelte:window bind:innerHeight={windowHeight}></svelte:window>
 
-<!-- Pattern Background -->
-<div class="pattern fixed top-0 left-0 w-full h-full z-[-1]"></div>
+<div class="flex h-screen">
+    <Sidebar></Sidebar>
+    <div class="w-full h-full relative">
+        <div class="pattern w-full h-full absolute top-0 left-0 z-[-1]">
 
-<!-- Main Layout -->
-<div class="flex min-h-screen">
-    <Sidebar />
-    <div class="w-full relative">
-        <div class="w-full min-h-screen pl-8 flex items-center justify-around">
-            <div class="flex gap-4 items-center">
+        </div>
+        <div class="w-full h-full pl-8 flex items-center justify-around">
+            <div class="flex gap-4 items-center ">
                 <div bind:this={scroll} class="flex flex-col max-h-[100dvh] overflow-hidden">
                     <div class="min-h-[100dvh] flex flex-col justify-around">
                         {#if videoOne == false}
@@ -92,49 +124,49 @@
                                 </div>
                             </div>
                         {:else}
-                            <div class="flex flex-col gap-6 w-full max-w-[30rem] md:max-w-[40rem] ml-auto mr-auto">
-                                <div bind:this={playerElementOne} class="bg-zinc-700 relative overflow-hidden w-full aspect-[9/16] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
+                            <div class="flex flex-col gap-6 w-[30rem] ml-auto mr-auto">
+                                <div bind:this={playerElementOne} class="bg-zinc-700 relative overflow-hidden w-full h-[45rem] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
                                     <div style="width: {videoProgressionOne * 100}%;" class="h-2 bg-yellow-400 transition-all absolute bottom-0 left-0"></div>
                                 </div>
 
                                 <div class="flex items-center justify-between -mt-3">
                                     <div class="flex items-center gap-3">
-                                        <button onclick={() => { if(videoStateOne == false) { playerOne.play(); } else { playerOne.pause(); } }} 
-                                            class="cursor-pointer rounded-2xl bg-black/80 hover:bg-black transition-colors flex w-16 h-16 items-center justify-around text-white">
+                                        <button onclick={() => { if(videoStateOne == false) { playerOne.play(); } else { playerOne.pause(); } }} class="cursor-pointer rounded-2xl bg-black flex w-20 h-20 items-center justify-around text-white">
                                             {#if videoEndedOne == true}
-                                                <Icon width=2.5rem icon=mdi:refresh></Icon>
+                                                <Icon width=3rem icon=mdi:refresh></Icon>
                                             {:else if videoStateOne == false}
-                                                <Icon width=2.5rem icon=mdi:play></Icon>
+                                                <Icon width=3rem icon=mdi:play></Icon>
                                             {:else}
-                                                <Icon width=2.5rem icon=mdi:pause></Icon>
+                                                <Icon width=3rem icon=mdi:pause></Icon>
                                             {/if}       
                                         </button>
                                         <button onclick={() => {
-                                            if(videoOne == false) return;
-
                                             fetch('/heart?type=' + (heartedOne ? "remove" : "add") + '&id=' + videoOne.id, {
                                                 method: 'POST',
                                             });
+
                                             videoOne.hearts += heartedOne ? -1 : 1;
+
                                             heartedOne = !heartedOne;
-                                        }} class="rounded-2xl cursor-pointer flex w-16 h-16 items-center justify-around transition-colors {heartedOne ? "bg-white hover:bg-gray-100 text-black" : "bg-black/80 hover:bg-black text-white"}">
-                                            <div class="flex flex-col items-center gap-0.5">
-                                                <Icon width=1.75rem icon=mdi:thumbs-up></Icon>
+                                        }} class="rounded-2xl cursor-pointer flex w-20 h-20 items-center justify-around {heartedOne ? "bg-white text-black" : "bg-black text-white"}">
+                                            <div class="flex flex-col items-center gap-0.5 mt-1">
+                                                <Icon width=2rem icon=mdi:thumbs-up></Icon>
                                                 <p class="text-xs">{videoOne.hearts}</p>
                                             </div>
                                         </button>
+                                        
                                     </div>
 
                                     <div class="flex items-center gap-3">
-                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
-                                            <Icon width=1.75rem icon=mdi:volume></Icon>
-                                        </button>
-                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
-                                            <Icon width=1.75rem icon=mdi:share></Icon>
-                                        </button>
-                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
-                                            <Icon width=1.75rem icon=mdi:comments></Icon>
-                                        </button>
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:volume></Icon>
+                                        </div>
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:share></Icon>
+                                        </div>
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:comments></Icon>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -167,8 +199,6 @@
                                             {/if}       
                                         </button>
                                         <button onclick={() => {
-                                             if(videoTwo == false) return;
-
                                             fetch('/heart?type=' + (heartedTwo ? "remove" : "add") + '&id=' + videoTwo.id, {
                                                 method: 'POST',
                                             });
@@ -182,6 +212,7 @@
                                                 <p class="text-xs">{videoTwo.hearts}</p>
                                             </div>
                                         </button>
+                                        
                                     </div>
 
                                     <div class="flex items-center gap-3">
@@ -201,41 +232,12 @@
                     </div>
                 </div>
 
-                <!-- Scroll buttons -->
                 <div class="flex flex-col gap-4 w-[6rem]">
-                    <button onclick={() => {
-                        let tempVideo = videoTwo;
-                        let tempHearted = heartedTwo;
-
-                        videoTwo = videoOne;
-                        heartedTwo = heartedOne;
-
-                        scroll.scrollTo({ top: windowHeight, behavior: "instant" });
-
-                        videoOne = tempVideo;
-                        heartedOne = tempHearted;
-
-                        scroll.scrollTo({ top: 0, behavior: "smooth" });
-                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                    <button class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
                         <Icon width=2.5rem icon=material-symbols:arrow-upward></Icon>
                     </button>
 
-                    <button onclick={() => { 
-                        scroll.scrollTo({ top: windowHeight, behavior: "smooth" });
-
-                        scroll.addEventListener('scrollend', () => {
-                            let tempVideo = videoOne;
-                            let tempHearted = heartedOne;
-
-                            videoOne = videoTwo;
-                            heartedOne = heartedTwo;
-
-                            scroll.scrollTo({ top: 0, behavior: "instant" });
-
-                            videoTwo = tempVideo;
-                            heartedTwo = tempHearted;
-                        }, { once: true });
-                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                    <button onclick={() => { scroll.scrollTo({ top: windowHeight, behavior: "smooth" }); }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
                         <Icon width=2.5rem icon=material-symbols:arrow-downward></Icon>
                     </button>   
                 </div>
@@ -244,38 +246,18 @@
     </div>
 </div>
 
-<!-- Vertical Stripes (Side Decoration) -->
-<div class="h-screen stripes w-[3rem] absolute overflow-hidden top-0 left-[5.5rem] pt-4 z-0">
+<div class="h-screen stripes w-[3rem] absolute overflow-hidden top-0 left-[5.5rem] pt-4">
     {#each new Array(40) as i}
         <div class="w-full h-2.5 rounded-full bg-zinc-700 mb-4 -rotate-12"></div>
     {/each}
 </div>
 
-<!-- Background Pattern Styling -->
 <style>
     .pattern {
-        background-color: #f8f9fa;
-        opacity: 0.9;
-        background-image: 
-            radial-gradient(#e9ecef 0.5px, transparent 0.5px),
-            radial-gradient(#e9ecef 0.5px, #f8f9fa 0.5px);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
-        /* Try fixed for persistent scroll background */
-        position: fixed; /* or absolute depending on scroll behavior */
-    }
-
-    .pattern::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            45deg,
-            rgba(255,255,255,0.2) 0%,
-            rgba(255,255,255,0.1) 100%
-        );
+        background-color: #e5e5f7;
+        opacity: 0.8;
+        background-image:  linear-gradient(#a5a9e8 2px, transparent 2px), linear-gradient(90deg, #a5a9e8 2px, transparent 2px), linear-gradient(#a5a9e8 1px, transparent 1px), linear-gradient(90deg, #bfc2f1 1px, #e5e5f7 1px);
+        background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+        background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
     }
 </style>
