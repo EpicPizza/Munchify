@@ -83,24 +83,160 @@
         <div class="w-full min-h-screen pl-8 flex items-center justify-around">
             <div class="flex gap-4 items-center">
                 <div bind:this={scroll} class="flex flex-col max-h-[100dvh] overflow-hidden">
-                    <!-- VIDEO ONE BLOCK HERE -->
-                    <!-- Keep existing block for Video One -->
-                    <!-- VIDEO TWO BLOCK HERE -->
-                    <!-- Keep existing block for Video Two -->
+                    <div class="min-h-[100dvh] flex flex-col justify-around">
+                        {#if videoOne == false}
+                            <div class="w-[30rem] h-[51rem] flex items-center justify-around bg-red-800 text-white rounded-lg">
+                                <div class="flex flex-col items-center gap-1">
+                                    <Icon width=4rem icon=material-symbols:heart-broken-outline></Icon>
+                                    <p class="text-2xl mt-5 font-bold font-[Edu_SA_Hand]">Video Not Found</p>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="flex flex-col gap-6 w-full max-w-[30rem] md:max-w-[40rem] ml-auto mr-auto">
+                                <div bind:this={playerElementOne} class="bg-zinc-700 relative overflow-hidden w-full aspect-[9/16] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
+                                    <div style="width: {videoProgressionOne * 100}%;" class="h-2 bg-yellow-400 transition-all absolute bottom-0 left-0"></div>
+                                </div>
+
+                                <div class="flex items-center justify-between -mt-3">
+                                    <div class="flex items-center gap-3">
+                                        <button onclick={() => { if(videoStateOne == false) { playerOne.play(); } else { playerOne.pause(); } }} 
+                                            class="cursor-pointer rounded-2xl bg-black/80 hover:bg-black transition-colors flex w-16 h-16 items-center justify-around text-white">
+                                            {#if videoEndedOne == true}
+                                                <Icon width=2.5rem icon=mdi:refresh></Icon>
+                                            {:else if videoStateOne == false}
+                                                <Icon width=2.5rem icon=mdi:play></Icon>
+                                            {:else}
+                                                <Icon width=2.5rem icon=mdi:pause></Icon>
+                                            {/if}       
+                                        </button>
+                                        <button onclick={() => {
+                                            if(videoOne == false) return;
+
+                                            fetch('/heart?type=' + (heartedOne ? "remove" : "add") + '&id=' + videoOne.id, {
+                                                method: 'POST',
+                                            });
+                                            videoOne.hearts += heartedOne ? -1 : 1;
+                                            heartedOne = !heartedOne;
+                                        }} class="rounded-2xl cursor-pointer flex w-16 h-16 items-center justify-around transition-colors {heartedOne ? "bg-white hover:bg-gray-100 text-black" : "bg-black/80 hover:bg-black text-white"}">
+                                            <div class="flex flex-col items-center gap-0.5">
+                                                <Icon width=1.75rem icon=mdi:thumbs-up></Icon>
+                                                <p class="text-xs">{videoOne.hearts}</p>
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:volume></Icon>
+                                        </button>
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:share></Icon>
+                                        </button>
+                                        <button class="rounded-full bg-black/10 hover:bg-black/20 transition-colors text-black flex items-center justify-around w-12 h-12">
+                                            <Icon width=1.75rem icon=mdi:comments></Icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <div class="min-h-[100dvh] flex flex-col justify-around">
+                        {#if videoTwo == false}
+                            <div class="w-[30rem] h-[51rem] flex items-center justify-around bg-red-800 text-white rounded-lg">
+                                <div class="flex flex-col items-center gap-1">
+                                    <Icon width=4rem icon=material-symbols:heart-broken-outline></Icon>
+                                    <p class="text-2xl mt-5 font-bold font-[Edu_SA_Hand]">Video Not Found</p>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="flex flex-col gap-6 w-[30rem] ml-auto mr-auto">
+                                <div bind:this={playerElementTwo} class="bg-zinc-700 relative overflow-hidden w-full h-[45rem] rounded-xl flex items-center justify-around font-[Edu_SA_Hand] font-extrabold">
+                                    <div style="width: {videoProgressionTwo * 100}%;" class="h-2 bg-yellow-400 transition-all absolute bottom-0 left-0"></div>
+                                </div>
+
+                                <div class="flex items-center justify-between -mt-3">
+                                    <div class="flex items-center gap-3">
+                                        <button onclick={() => { if(videoStateTwo == false) { playerTwo.play(); } else { playerTwo.pause(); } }} class="cursor-pointer rounded-2xl bg-black flex w-20 h-20 items-center justify-around text-white">
+                                            {#if videoEndedTwo == true}
+                                                <Icon width=3rem icon=mdi:refresh></Icon>
+                                            {:else if videoStateTwo == false}
+                                                <Icon width=3rem icon=mdi:play></Icon>
+                                            {:else}
+                                                <Icon width=3rem icon=mdi:pause></Icon>
+                                            {/if}       
+                                        </button>
+                                        <button onclick={() => {
+                                             if(videoTwo == false) return;
+
+                                            fetch('/heart?type=' + (heartedTwo ? "remove" : "add") + '&id=' + videoTwo.id, {
+                                                method: 'POST',
+                                            });
+
+                                            videoTwo.hearts += heartedTwo ? -1 : 1;
+
+                                            heartedTwo = !heartedTwo;
+                                        }} class="rounded-2xl cursor-pointer flex w-20 h-20 items-center justify-around {heartedTwo ? "bg-white text-black" : "bg-black text-white"}">
+                                            <div class="flex flex-col items-center gap-0.5 mt-1">
+                                                <Icon width=2rem icon=mdi:thumbs-up></Icon>
+                                                <p class="text-xs">{videoTwo.hearts}</p>
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:volume></Icon>
+                                        </div>
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:share></Icon>
+                                        </div>
+                                        <div class="rounded-full bg-black/20 text-black flex items-center justify-around w-14 h-14">
+                                            <Icon width=2rem icon=mdi:comments></Icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
                 </div>
 
                 <!-- Scroll buttons -->
                 <div class="flex flex-col gap-4 w-[6rem]">
-                    <button class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-center text-black">
-                        <Icon width="2.5rem" icon="material-symbols:arrow-upward" />
+                    <button onclick={() => {
+                        let tempVideo = videoTwo;
+                        let tempHearted = heartedTwo;
+
+                        videoTwo = videoOne;
+                        heartedTwo = heartedOne;
+
+                        scroll.scrollTo({ top: windowHeight, behavior: "instant" });
+
+                        videoOne = tempVideo;
+                        heartedOne = tempHearted;
+
+                        scroll.scrollTo({ top: 0, behavior: "smooth" });
+                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                        <Icon width=2.5rem icon=material-symbols:arrow-upward></Icon>
                     </button>
-                    <button
-                        onclick={() => {
-                            scroll.scrollTo({ top: windowHeight, behavior: "smooth" });
-                        }}
-                        class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-center text-black"
-                    >
-                        <Icon width="2.5rem" icon="material-symbols:arrow-downward" />
+
+                    <button onclick={() => { 
+                        scroll.scrollTo({ top: windowHeight, behavior: "smooth" });
+
+                        scroll.addEventListener('scrollend', () => {
+                            let tempVideo = videoOne;
+                            let tempHearted = heartedOne;
+
+                            videoOne = videoTwo;
+                            heartedOne = heartedTwo;
+
+                            scroll.scrollTo({ top: 0, behavior: "instant" });
+
+                            videoTwo = tempVideo;
+                            heartedTwo = tempHearted;
+                        }, { once: true });
+                    }} class="cursor-pointer w-full h-[6rem] bg-amber-400/80 rounded-full flex items-center justify-around text-black">
+                        <Icon width=2.5rem icon=material-symbols:arrow-downward></Icon>
                     </button>   
                 </div>
             </div>
