@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
 
-# Environment variables
+# Environ"ment variables
 .env
+.env.local
+.env.*.local
 
 # Build output
 dist/

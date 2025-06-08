@@ -4,6 +4,10 @@ import { promisify } from 'util';
 import { exec } from 'child_process';
 import * as fs from 'fs/promises';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const execAsync = promisify(exec);
 
@@ -26,11 +30,14 @@ export class AudioGenerationService {
     private readonly tempDir: string;
 
     constructor(
-        apiKey: string = 'sk_93e4270d7464ba1e4bfab386bd06fc586c6b75d40234faa8',
         voiceId: string = 'pNInz6obpgDQGcFmaJgB',
         modelId: string = 'eleven_monolingual_v1',
         tempDir: string = './temp_audio'
     ) {
+        const apiKey = process.env.ELEVEN_LABS_API_KEY;
+        if (!apiKey) {
+            throw new Error('ELEVEN_LABS_API_KEY environment variable is not set');
+        }
         this.apiKey = apiKey;
         this.voiceId = voiceId;
         this.modelId = modelId;
