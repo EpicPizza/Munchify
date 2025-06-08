@@ -28,11 +28,12 @@
 	"dependencies": {
 		"@ffmpeg/core": "^0.12.10",
 		"@ffmpeg/ffmpeg": "^0.12.15",
-		"@google/generative-ai": "^0.24.1",
 		"@google/genai": "^1.4.0",
+		"@google/generative-ai": "^0.24.1",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@types/node": "^22.15.30",
 		"@vimeo/player": "^2.29.0",
+		"axios": "^1.9.0",
 		"firebase": "^11.8.1",
 		"firebase-admin": "^13.4.0",
 		"fluent-ffmpeg": "^2.1.3",
